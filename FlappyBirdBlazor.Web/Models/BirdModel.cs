@@ -1,20 +1,40 @@
-using System;
-
 namespace FlappyBirdBlazor.Web.Models
 {
     public class BirdModel
     {
-        public int DistanceFromGround { get; private set; } = 100;
-        public bool IsOnGround => DistanceFromGround <= 0;
+        public static readonly int Height = 45;
+        public static readonly int Width = 60;
 
-        internal void Fall(int gravity)
+        public int Bottom { get; private set; }
+        public int Left { get; }
+        public int Top => Bottom + Height;
+        public int Right => Left + Width;
+
+        public bool IsOnGround => Bottom <= 0;
+
+        public BirdModel(int left, int bottom)
         {
-            DistanceFromGround -= gravity;
+            Left = left;
+            Bottom = bottom;
         }
 
-        internal void Flap(int strength)
+        internal void Fall(int distance)
         {
-            DistanceFromGround += strength;
+            Bottom -= distance;
+        }
+
+        internal void Flap(int distance)
+        {
+            Bottom += distance;
+        }
+
+        internal bool IsBetweenY(int bottomBound, int topBound)
+        {
+            var topCheck = Top <= topBound;
+
+            var bottomCheck = Bottom >= bottomBound;
+
+            return topCheck && bottomCheck;
         }
     }
 }

@@ -7,28 +7,49 @@ namespace FlappyBirdBlazor.Web.Models
 {
     public class GameManager
     {
-        private readonly int _delayPerFrame = 20;
-        private readonly int _gameSpeedMultiplier = 2;
-        private readonly int _gravity = 2;
-        private readonly int _speed = 2;
-        private readonly int _birdFlapStrength = 50;
-        private readonly int _maxFlapHeight = 580 - 50;
-        private readonly int _pipeGap = 130;
+        private const int ContainerWidth = 500;
+        private const int ContainerHeight = 700;
+        private const int GroundHeight = 100;
+        private const int SkyHeight = ContainerHeight - GroundHeight;
 
-        public BirdModel Bird { get; private set; } = new BirdModel();
-        public List<PipeModel> Pipes { get; private set; } = new List<PipeModel>();
+        private const int GameSpeedMultiplier = 2;
+        private const int DelayPerFrame = 16;
+
+        private const int BirdStartingDistanceFromGround = 200;
+        private const int BirdFlapStrength = 50;
+        private const int BirdGravity = 1;
+        private const int MaxFlapHeight = SkyHeight - BirdFlapStrength;
+
+        private const int PipeGapHeight = 130;
+        private const int PipeSpeed = 1;
+
+        private readonly Random _random = new Random();
+        private readonly int _birdStartingDistanceFromLeft = (ContainerWidth / 2) - (BirdModel.Width / 2);
+
         public bool IsRunning { get; private set; } = false;
-        public event EventHandler MainLoopCompleted;
+        public event EventHandler OnTick;
+        public BirdModel Bird { get; private set; }
+        public List<PipeModel> Pipes { get; private set; }
+
+        public GameManager()
+        {
+            ResetActors();
+        }
 
         public async Task StartGame()
         {
             if (!IsRunning)
             {
                 IsRunning = true;
-                Bird = new BirdModel();
-                Pipes = new List<PipeModel>();
+                ResetActors();
                 await MainLoop();
             }
+        }
+
+        private void ResetActors()
+        {
+            Bird = new BirdModel(_birdStartingDistanceFromLeft, BirdStartingDistanceFromGround);
+            Pipes = new List<PipeModel>();
         }
 
         public async Task MainLoop()
@@ -40,18 +61,18 @@ namespace FlappyBirdBlazor.Web.Models
                 ManagePipes();
 
                 // Invoke render
-                MainLoopCompleted?.Invoke(this, EventArgs.Empty);
-                await Task.Delay(_delayPerFrame);
+                OnTick?.Invoke(this, EventArgs.Empty);
+                await Task.Delay(DelayPerFrame);
             }
         }
 
         public void MoveActors()
         {
-            Bird.Fall(_gravity * _gameSpeedMultiplier);
+            Bird.Fall(BirdGravity * GameSpeedMultiplier);
 
             foreach (var pipe in Pipes)
             {
-                pipe.Move(_speed * _gameSpeedMultiplier);
+                pipe.Move(PipeSpeed * GameSpeedMultiplier);
             }
         }
 
@@ -61,13 +82,24 @@ namespace FlappyBirdBlazor.Web.Models
             {
                 GameOver();
             }
+
+            var closestPipe = Pipes.FirstOrDefault(p => p.IsInVerticalSpace(Bird.Left, Bird.Right));
+
+            if (closestPipe != null)
+            {
+                if (!Bird.IsBetweenY(closestPipe.GapBottom, closestPipe.GapTop))
+                {
+                    GameOver();
+                }
+            }
         }
 
         public void ManagePipes()
         {
-            if (!Pipes.Any() || Pipes.Last().DistanceFromLeft < 250)
+            if (!Pipes.Any() || Pipes.Last().Left < (ContainerWidth / 2))
             {
-                Pipes.Add(new PipeModel(_pipeGap));
+                var bottom = _random.Next(0, 60) - GroundHeight;
+                Pipes.Add(new PipeModel(ContainerWidth, bottom, PipeGapHeight));
             }
 
             var firstPipe = Pipes.First();
@@ -80,9 +112,9 @@ namespace FlappyBirdBlazor.Web.Models
 
         public void SpacePressed()
         {
-            if (IsRunning && Bird.DistanceFromGround <= _maxFlapHeight)
+            if (IsRunning && Bird.Bottom <= MaxFlapHeight)
             {
-                Bird.Flap(_birdFlapStrength);
+                Bird.Flap(BirdFlapStrength);
             }
         }
 

@@ -2,8 +2,9 @@
   <div class="pipe" style="@_bottomCss"></div>
 
 @code {
+    [Parameter]
+    public PipeModel Model { get; set; }
 
-  [Parameter] public PipeModel Model { get; set; }
-      string _topCss => $"left: {Model.DistanceFromLeft}px; bottom: {Model.DistanceFromGround}px;";
-      string _bottomCss => $"left: {Model.DistanceFromLeft}px; bottom: {Model.DistanceFromGround + 300 + Model.Gap}px;";
+    private string _topCss => $"left: {Model.Left}px; bottom: {Model.GapTop}px;";
+    private string _bottomCss => $"left: {Model.Left}px; bottom: {Model.Bottom}px;";
 }

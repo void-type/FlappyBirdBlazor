@@ -1,13 +1,13 @@
 <div class="game-container" tabindex="0" @onclick="_gameManager.StartGame" @onkeydown="HandleKeyDown">
   <div class="sky">
     <Bird Model="_gameManager.Bird"></Bird>
+
+    @foreach (var pipe in _gameManager.Pipes)
+    {
+      <Pipe Model="pipe"></Pipe>
+    }
   </div>
   <div class="ground"></div>
-
-  @foreach (var pipe in _gameManager.Pipes)
-  {
-    <Pipe Model="pipe"></Pipe>
-  }
 </div>
 
 @code {
@@ -17,7 +17,7 @@
       protected override void OnInitialized()
       {
           _gameManager = new GameManager();
-          _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
+          _gameManager.OnTick += (o, e) => StateHasChanged();
       }
 
       void HandleKeyDown(KeyboardEventArgs eventArgs)
