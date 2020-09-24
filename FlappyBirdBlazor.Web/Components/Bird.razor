@@ -1,8 +1,0 @@
-<div class="bird" style="@_css"></div>
-
-@code {
-    [Parameter]
-    public BirdModel Model { get; set; }
-
-    private string _css => $"bottom: {Model.Bottom}px;";
-}

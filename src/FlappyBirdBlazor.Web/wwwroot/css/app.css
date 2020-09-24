@@ -1,6 +1,4 @@
 ﻿.game-container {
-    width: 500px;
-    height: 700px;
     position: absolute;
     top: 0px;
     left: 0px;
@@ -8,8 +6,6 @@
 
 .sky {
     background-color: lightblue;
-    width: 500px;
-    height: 600px;
     position: absolute;
     top: 0px;
     left: 0px;
@@ -17,27 +13,17 @@
 
 .ground {
     background-color: forestgreen;
-    width: 500px;
-    height: 100px;
     position: absolute;
-    top:600px;
     left:0px;
-    /* z-index: +1; */
 }
 
 .bird {
     background-color: yellow;
-    width: 60px;
-    height: 45px;
     position: absolute;
-    /* (500/2) - (60/2) */
-    left: 220px;
 }
 
 .pipe {
     background-color: black;
-    width: 60px;
-    height: 300px;
     position: absolute;
 }
 

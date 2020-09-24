@@ -12,6 +12,9 @@ namespace FlappyBirdBlazor.Web.Models
 
         public bool IsOnGround => Bottom <= 0;
 
+        private int UpwardMomentum = 0;
+        private int FlapFrameCount = 0;
+
         public BirdModel(int left, int bottom)
         {
             Left = left;
@@ -20,18 +23,29 @@ namespace FlappyBirdBlazor.Web.Models
 
         internal void Fall(int distance)
         {
-            Bottom -= distance;
+            if (FlapFrameCount > 0)
+            {
+                Bottom += UpwardMomentum / 2;
+                FlapFrameCount -= 1;
+            }
+            else
+            {
+                Bottom -= distance;
+            }
         }
 
         internal void Flap(int distance)
         {
-            Bottom += distance;
+            if (FlapFrameCount == 0)
+            {
+                UpwardMomentum = distance;
+                FlapFrameCount = 2;
+            }
         }
 
         internal bool IsBetweenY(int bottomBound, int topBound)
         {
             var topCheck = Top <= topBound;
-
             var bottomCheck = Bottom >= bottomBound;
 
             return topCheck && bottomCheck;

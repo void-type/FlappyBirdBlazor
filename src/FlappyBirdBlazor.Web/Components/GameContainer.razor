@@ -1,0 +1,34 @@
+<div class="game-container" tabindex="0" style="@_containerCss" @onclick="_gameManager.StartGame" @onkeydown="HandleKeyDown">
+  <div class="sky" style="@_skyCss">
+    <Bird Model="_gameManager.Bird"></Bird>
+
+    @foreach (var pipe in _gameManager.Pipes)
+    {
+      <Pipe Model="pipe"></Pipe>
+    }
+  </div>
+  <div class="ground" style="@_groundCss"></div>
+</div>
+
+@code {
+
+  GameManager _gameManager;
+
+      private string _containerCss => $"height: {GameManager.ContainerHeight}px; width: {GameManager.ContainerWidth}px;";
+      private string _skyCss => $"height: {GameManager.SkyHeight}px; width: {GameManager.ContainerWidth}px;";
+      private string _groundCss => $"top: {GameManager.SkyHeight}px; height: {GameManager.GroundHeight}px; width: {GameManager.ContainerWidth}px;";
+
+      protected override void OnInitialized()
+      {
+          _gameManager = new GameManager();
+          _gameManager.OnTick += (o, e) => StateHasChanged();
+      }
+
+      void HandleKeyDown(KeyboardEventArgs eventArgs)
+      {
+          if (eventArgs.Key == " ")
+          {
+              _gameManager.SpacePressed();
+          }
+      }
+}

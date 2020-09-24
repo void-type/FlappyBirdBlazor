@@ -7,21 +7,21 @@ namespace FlappyBirdBlazor.Web.Models
 {
     public class GameManager
     {
-        private const int ContainerWidth = 500;
-        private const int ContainerHeight = 700;
-        private const int GroundHeight = 100;
-        private const int SkyHeight = ContainerHeight - GroundHeight;
+        public const int ContainerWidth = 500;
+        public const int ContainerHeight = 700;
+        public const int GroundHeight = 100;
+        public const int SkyHeight = ContainerHeight - GroundHeight;
 
-        private const int GameSpeedMultiplier = 2;
-        private const int DelayPerFrame = 16;
+        public const int GameSpeedMultiplier = 2;
+        public const int DelayPerFrame = 16;
 
-        private const int BirdStartingDistanceFromGround = 200;
-        private const int BirdFlapStrength = 50;
-        private const int BirdGravity = 1;
-        private const int MaxFlapHeight = SkyHeight - BirdFlapStrength;
+        public const int BirdStartingDistanceFromGround = 200;
+        public const int BirdFlapStrength = 50;
+        public const int BirdGravity = 1;
+        public const int MaxFlapHeight = SkyHeight - BirdFlapStrength;
 
-        private const int PipeGapHeight = 130;
-        private const int PipeSpeed = 1;
+        public const int PipeGapHeight = 130;
+        public const int PipeSpeed = 1;
 
         private readonly Random _random = new Random();
         private readonly int _birdStartingDistanceFromLeft = (ContainerWidth / 2) - (BirdModel.Width / 2);
@@ -98,8 +98,12 @@ namespace FlappyBirdBlazor.Web.Models
         {
             if (!Pipes.Any() || Pipes.Last().Left < (ContainerWidth / 2))
             {
-                var bottom = _random.Next(0, 60) - GroundHeight;
-                Pipes.Add(new PipeModel(ContainerWidth, bottom, PipeGapHeight));
+                var pipeRange = 120;
+
+                var pipeBottomWhenCentered = (SkyHeight / 2) - (PipeGapHeight / 2) - PipeModel.Height;
+                var pipeBottom = pipeBottomWhenCentered - pipeRange + _random.Next(0, pipeRange);
+
+                Pipes.Add(new PipeModel(ContainerWidth, pipeBottom, PipeGapHeight));
             }
 
             var firstPipe = Pipes.First();

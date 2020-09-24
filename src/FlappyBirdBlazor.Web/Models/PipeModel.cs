@@ -3,11 +3,11 @@ namespace FlappyBirdBlazor.Web.Models
     public class PipeModel
     {
         public static readonly int Width = 60;
-        public static readonly int Height = 300;
+        public static readonly int Height = 400;
 
         public int Bottom { get; }
         public int Left { get; private set; }
-        public int Top => Bottom + Height;
+        public int Top => Bottom + (Height * 2) + GapHeight;
         public int Right => Left + Width;
 
         public bool IsOffScreen => Left <= -Width;

@@ -5,11 +5,15 @@
             "label": "build",
             "command": "dotnet",
             "type": "process",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "src/FlappyBirdBlazor.Web/",
+            },
             "args": [
                 "build",
-                "${workspaceFolder}/FlappyBirdBlazor.Web/FlappyBirdBlazor.Web.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -17,11 +21,11 @@
             "label": "publish",
             "command": "dotnet",
             "type": "process",
+            "options": {
+                "cwd": "src/FlappyBirdBlazor.Web/",
+            },
             "args": [
                 "publish",
-                "${workspaceFolder}/FlappyBirdBlazor.Web/FlappyBirdBlazor.Web.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -29,12 +33,12 @@
             "label": "watch",
             "command": "dotnet",
             "type": "process",
+            "options": {
+                "cwd": "src/FlappyBirdBlazor.Web/",
+            },
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/FlappyBirdBlazor.Web/FlappyBirdBlazor.Web.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
         }
