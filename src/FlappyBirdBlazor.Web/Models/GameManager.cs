@@ -7,12 +7,12 @@ namespace FlappyBirdBlazor.Web.Models
 {
     public class GameManager
     {
-        public const int ContainerWidth = 500;
+        public const int ContainerWidth = 600;
         public const int ContainerHeight = 700;
         public const int GroundHeight = 100;
         public const int SkyHeight = ContainerHeight - GroundHeight;
 
-        public const int GameSpeedMultiplier = 2;
+        public const int GameSpeedMultiplier = 3;
         public const int DelayPerFrame = 16;
 
         public const int BirdStartingDistanceFromGround = 200;
@@ -20,11 +20,13 @@ namespace FlappyBirdBlazor.Web.Models
         public const int BirdGravity = 1;
         public const int MaxFlapHeight = SkyHeight - BirdFlapStrength;
 
+        public const int PipeHeightVariation = 160;
         public const int PipeGapHeight = 130;
+        public const int PipeSpacing = 250;
         public const int PipeSpeed = 1;
 
         private readonly Random _random = new Random();
-        private readonly int _birdStartingDistanceFromLeft = (ContainerWidth / 2) - (BirdModel.Width / 2);
+        public readonly int BirdStartingDistanceFromLeft = (ContainerWidth / 2) - (BirdModel.Width / 2);
 
         public bool IsRunning { get; private set; } = false;
         public event EventHandler OnTick;
@@ -48,7 +50,7 @@ namespace FlappyBirdBlazor.Web.Models
 
         private void ResetActors()
         {
-            Bird = new BirdModel(_birdStartingDistanceFromLeft, BirdStartingDistanceFromGround);
+            Bird = new BirdModel(BirdStartingDistanceFromLeft, BirdStartingDistanceFromGround);
             Pipes = new List<PipeModel>();
         }
 
@@ -96,12 +98,10 @@ namespace FlappyBirdBlazor.Web.Models
 
         public void ManagePipes()
         {
-            if (!Pipes.Any() || Pipes.Last().Left < (ContainerWidth / 2))
+            if (!Pipes.Any() || Pipes.Last().Left < (ContainerWidth - PipeSpacing))
             {
-                var pipeRange = 120;
-
                 var pipeBottomWhenCentered = (SkyHeight / 2) - (PipeGapHeight / 2) - PipeModel.Height;
-                var pipeBottom = pipeBottomWhenCentered - pipeRange + _random.Next(0, pipeRange);
+                var pipeBottom = pipeBottomWhenCentered - PipeHeightVariation + _random.Next(0, PipeHeightVariation);
 
                 Pipes.Add(new PipeModel(ContainerWidth, pipeBottom, PipeGapHeight));
             }

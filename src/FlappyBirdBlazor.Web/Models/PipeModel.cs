@@ -3,7 +3,7 @@ namespace FlappyBirdBlazor.Web.Models
     public class PipeModel
     {
         public static readonly int Width = 60;
-        public static readonly int Height = 400;
+        public static readonly int Height = 500;
 
         public int Bottom { get; }
         public int Left { get; private set; }

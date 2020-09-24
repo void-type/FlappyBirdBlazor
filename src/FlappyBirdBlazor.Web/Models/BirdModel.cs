@@ -14,6 +14,7 @@ namespace FlappyBirdBlazor.Web.Models
 
         private int UpwardMomentum = 0;
         private int FlapFrameCount = 0;
+        private const int FlapAnimationLength = 3;
 
         public BirdModel(int left, int bottom)
         {
@@ -25,7 +26,7 @@ namespace FlappyBirdBlazor.Web.Models
         {
             if (FlapFrameCount > 0)
             {
-                Bottom += UpwardMomentum / 2;
+                Bottom += UpwardMomentum / FlapAnimationLength;
                 FlapFrameCount -= 1;
             }
             else
@@ -39,7 +40,7 @@ namespace FlappyBirdBlazor.Web.Models
             if (FlapFrameCount == 0)
             {
                 UpwardMomentum = distance;
-                FlapFrameCount = 2;
+                FlapFrameCount = FlapAnimationLength;
             }
         }
 
