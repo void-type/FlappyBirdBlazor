@@ -1,3 +1,5 @@
+@using System.Text.Json;
+
 <div class="game-container" tabindex="0" style="@_containerCss" @onclick="_gameManager.StartGame" @onkeydown="HandleKeyDown">
   <div class="sky" style="@_skyCss">
     <Bird Model="_gameManager.Bird"></Bird>
@@ -9,26 +11,73 @@
   </div>
   <div class="ground" style="@_groundCss"></div>
 </div>
+<textarea name="info" style="@_infoCss" disabled>
+  @Message()
+
+  @if(_showGameState){
+    @SerializedGameState()
+  }
+</textarea>
 
 @code {
 
   GameManager _gameManager;
 
+      private bool _showGameState = true;
+
       private string _containerCss => $"height: {GameManager.ContainerHeight}px; width: {GameManager.ContainerWidth}px;";
       private string _skyCss => $"height: {GameManager.SkyHeight}px; width: {GameManager.ContainerWidth}px;";
       private string _groundCss => $"top: {GameManager.SkyHeight}px; height: {GameManager.GroundHeight}px; width: {GameManager.ContainerWidth}px;";
+      private string _infoCss => $"top: 0; left: {GameManager.ContainerWidth + 10}px; height: 90%; width: {GameManager.ContainerWidth}px; position: absolute;";
 
       protected override void OnInitialized()
       {
           _gameManager = new GameManager();
-          _gameManager.OnTick += (o, e) => StateHasChanged();
+          _gameManager.OnReadyToRender += (o, e) => StateHasChanged();
       }
 
-      void HandleKeyDown(KeyboardEventArgs eventArgs)
+      private string SerializedGameState()
       {
-          if (eventArgs.Key == " ")
+          return JsonSerializer.Serialize(_gameManager, new JsonSerializerOptions() { WriteIndented = true });
+      }
+
+      private string Message()
+      {
+          if (_gameManager.IsGameOver)
           {
-              _gameManager.SpacePressed();
+              return "Game Over. Click to restart.";
+          }
+
+          if (!_gameManager.IsRunning)
+          {
+              return "Click to start.";
+          }
+
+          return "";
+      }
+
+      private void HandleKeyDown(KeyboardEventArgs eventArgs)
+      {
+          switch (eventArgs.Key)
+          {
+              case " ":
+                  _gameManager.ButtonPressed(UserInput.Jump);
+                  break;
+              case "a":
+                  _gameManager.ButtonPressed(UserInput.Left);
+                  break;
+              case "d":
+                  _gameManager.ButtonPressed(UserInput.Right);
+                  break;
+              case "s":
+                  _gameManager.ButtonPressed(UserInput.Down);
+                  break;
+              case "w":
+                  _gameManager.ButtonPressed(UserInput.Up);
+                  break;
+              case "p":
+                  _gameManager.ButtonPressed(UserInput.Pause);
+                  break;
           }
       }
 }

@@ -11,15 +11,17 @@ namespace FlappyBirdBlazor.Web.Models
         public int Right => Left + Width;
 
         public bool IsOnGround => Bottom <= 0;
+        public int MaxFlapHeight { get; }
 
         private int UpwardMomentum = 0;
         private int FlapFrameCount = 0;
         private const int FlapAnimationLength = 3;
 
-        public BirdModel(int left, int bottom)
+        public BirdModel(int left, int bottom, int maxFlapHeight)
         {
             Left = left;
             Bottom = bottom;
+            MaxFlapHeight = maxFlapHeight;
         }
 
         internal void Fall(int distance)
@@ -37,7 +39,7 @@ namespace FlappyBirdBlazor.Web.Models
 
         internal void Flap(int distance)
         {
-            if (FlapFrameCount == 0)
+            if (FlapFrameCount == 0  && Bottom <= MaxFlapHeight)
             {
                 UpwardMomentum = distance;
                 FlapFrameCount = FlapAnimationLength;

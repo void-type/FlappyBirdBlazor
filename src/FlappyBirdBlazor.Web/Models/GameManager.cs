@@ -7,74 +7,95 @@ namespace FlappyBirdBlazor.Web.Models
 {
     public class GameManager
     {
-        public const int ContainerWidth = 600;
+        public const int ContainerWidth = 900;
         public const int ContainerHeight = 700;
         public const int GroundHeight = 100;
         public const int SkyHeight = ContainerHeight - GroundHeight;
 
-        public const int GameSpeedMultiplier = 3;
         public const int DelayPerFrame = 16;
 
         public const int BirdStartingDistanceFromGround = 200;
         public const int BirdFlapStrength = 50;
-        public const int BirdGravity = 1;
-        public const int MaxFlapHeight = SkyHeight - BirdFlapStrength;
+        public const int BirdGravity = 3;
+        public const int BirdMaxFlapHeight = SkyHeight - BirdFlapStrength;
+        public readonly int BirdStartingDistanceFromLeft = (ContainerWidth / 2) - (BirdModel.Width / 2);
+        public bool GodMode { get; set; } = true;
+
 
         public const int PipeHeightVariation = 160;
         public const int PipeGapHeight = 130;
         public const int PipeSpacing = 250;
-        public const int PipeSpeed = 1;
+        public const int PipeSpeed = 4;
 
         private readonly Random _random = new Random();
-        public readonly int BirdStartingDistanceFromLeft = (ContainerWidth / 2) - (BirdModel.Width / 2);
+        public event EventHandler OnReadyToRender;
 
         public bool IsRunning { get; private set; } = false;
-        public event EventHandler OnTick;
+        public bool IsGameOver { get; private set; } = false;
+        public bool IsPaused { get; private set; } = false;
         public BirdModel Bird { get; private set; }
         public List<PipeModel> Pipes { get; private set; }
 
+        public UserInputState InputState { get; set; }
+
         public GameManager()
         {
-            ResetActors();
+            ResetGame();
         }
 
         public async Task StartGame()
         {
             if (!IsRunning)
             {
-                IsRunning = true;
-                ResetActors();
+                ResetGame();
                 await MainLoop();
             }
         }
 
-        private void ResetActors()
+        private void ResetGame()
         {
-            Bird = new BirdModel(BirdStartingDistanceFromLeft, BirdStartingDistanceFromGround);
+            Bird = new BirdModel(BirdStartingDistanceFromLeft, BirdStartingDistanceFromGround, SkyHeight - BirdFlapStrength);
             Pipes = new List<PipeModel>();
+            InputState = new UserInputState();
+            IsGameOver = false;
+            IsPaused = false;
         }
 
         public async Task MainLoop()
         {
+            IsRunning = true;
+
             while (IsRunning)
             {
-                MoveActors();
-                CheckForCollisions();
-                ManagePipes();
+                var frameInputState = InputState;
+                InputState = new UserInputState();
 
-                // Invoke render
-                OnTick?.Invoke(this, EventArgs.Empty);
+                if (!IsPaused)
+                {
+                    MoveActors(frameInputState);
+                    CheckForCollisions();
+                    ManagePipes();
+                }
+
+                OnReadyToRender?.Invoke(this, EventArgs.Empty);
                 await Task.Delay(DelayPerFrame);
             }
         }
 
-        public void MoveActors()
+        public void MoveActors(UserInputState oldInput)
         {
-            Bird.Fall(BirdGravity * GameSpeedMultiplier);
+            if (oldInput.Jump)
+            {
+                Bird.Flap(BirdFlapStrength);
+            }
+            else
+            {
+                Bird.Fall(BirdGravity);
+            }
 
             foreach (var pipe in Pipes)
             {
-                pipe.Move(PipeSpeed * GameSpeedMultiplier);
+                pipe.Move(PipeSpeed);
             }
         }
 
@@ -82,6 +103,7 @@ namespace FlappyBirdBlazor.Web.Models
         {
             if (Bird.IsOnGround)
             {
+                Bird.Fall(Bird.Bottom);
                 GameOver();
             }
 
@@ -114,17 +136,41 @@ namespace FlappyBirdBlazor.Web.Models
             }
         }
 
-        public void SpacePressed()
+        public void GameOver()
         {
-            if (IsRunning && Bird.Bottom <= MaxFlapHeight)
+            if (!GodMode)
             {
-                Bird.Flap(BirdFlapStrength);
+                IsGameOver = true;
+                IsRunning = false;
             }
         }
 
-        public void GameOver()
+        public void ButtonPressed(UserInput input)
         {
-            IsRunning = false;
+            switch (input)
+            {
+                case UserInput.Jump:
+                    InputState.Jump = true;
+                    break;
+                case UserInput.Left:
+                    InputState.Left = true;
+                    break;
+                case UserInput.Right:
+                    InputState.Right = true;
+                    break;
+                case UserInput.Down:
+                    InputState.Down = true;
+                    break;
+                case UserInput.Up:
+                    InputState.Up = true;
+                    break;
+                case UserInput.Pause:
+                    if (IsRunning)
+                    {
+                        IsPaused = !IsPaused;
+                    }
+                    break;
+            }
         }
     }
 }
