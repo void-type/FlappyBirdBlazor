@@ -1,11 +1,9 @@
-  <div class="pipe" style="@_topCss"></div>
-  <div class="pipe" style="@_bottomCss"></div>
+  <div class="pipe" style="@_css"></div>
 
 @code {
 
   [Parameter]
       public PipeModel Model { get; set; }
 
-      private string _topCss => $"left: {Model.Left}px; bottom: {Model.GapTop}px; height: {PipeModel.Height}px; width: {PipeModel.Width}px;";
-      private string _bottomCss => $"left: {Model.Left}px; bottom: {Model.Bottom}px; height: {PipeModel.Height}px; width: {PipeModel.Width}px;";
+      private string _css => $"left: {Model.Left}px; bottom: {Model.Bottom}px; height: {Model.Height}px; width: {Model.Width}px;";
 }

@@ -7,36 +7,37 @@ namespace FlappyBirdBlazor.Web.Models
 {
     public class GameManager
     {
+        public const int DelayPerFrame = 16;
+        public bool Invincibility { get; set; } = false;
+        public bool ShowGameState { get; set; } = false;
+
         public const int ContainerWidth = 900;
         public const int ContainerHeight = 700;
         public const int GroundHeight = 100;
         public const int SkyHeight = ContainerHeight - GroundHeight;
 
-        public const int DelayPerFrame = 16;
-
-        public const int BirdStartingDistanceFromGround = 200;
+        public const int BirdInitialBottom = 200;
         public const int BirdFlapStrength = 50;
         public const int BirdGravity = 3;
-        public const int BirdMaxFlapHeight = SkyHeight - BirdFlapStrength;
-        public readonly int BirdStartingDistanceFromLeft = (ContainerWidth / 2) - (BirdModel.Width / 2);
-        public bool GodMode { get; set; } = true;
+        public const int BirdHeight = 45;
+        public const int BirdWidth = 60;
 
-
-        public const int PipeHeightVariation = 160;
+        public const int PipeYAxisVariation = 160;
         public const int PipeGapHeight = 130;
         public const int PipeSpacing = 250;
         public const int PipeSpeed = 4;
-
-        private readonly Random _random = new Random();
-        public event EventHandler OnReadyToRender;
+        public int PipeHeight => ContainerHeight;
+        public const int PipeWidth = 60;
 
         public bool IsRunning { get; private set; } = false;
         public bool IsGameOver { get; private set; } = false;
         public bool IsPaused { get; private set; } = false;
         public BirdModel Bird { get; private set; }
-        public List<PipeModel> Pipes { get; private set; }
+        public List<PipesModel> Pipes { get; private set; }
 
-        public UserInputState InputState { get; set; }
+        private readonly Random _random = new Random();
+        private readonly UserInputManager _inputManager = new UserInputManager();
+        public event EventHandler OnReadyToRender;
 
         public GameManager()
         {
@@ -52,27 +53,38 @@ namespace FlappyBirdBlazor.Web.Models
             }
         }
 
-        private void ResetGame()
+        public void ResetGame()
         {
-            Bird = new BirdModel(BirdStartingDistanceFromLeft, BirdStartingDistanceFromGround, SkyHeight - BirdFlapStrength);
-            Pipes = new List<PipeModel>();
-            InputState = new UserInputState();
+            _inputManager.ResetState();
+            var birdInitialLeft = (ContainerWidth / 2) - (BirdWidth / 2);
+            Bird = new BirdModel(birdInitialLeft, BirdInitialBottom, BirdHeight, BirdWidth);
+            Pipes = new List<PipesModel>();
             IsGameOver = false;
             IsPaused = false;
         }
 
-        public async Task MainLoop()
+        public void HandleUserInput(UserInputCommand command)
+        {
+            _inputManager.AddCommand(command);
+        }
+
+        private async Task MainLoop()
         {
             IsRunning = true;
 
             while (IsRunning)
             {
-                var frameInputState = InputState;
-                InputState = new UserInputState();
+                var inputState = _inputManager.GetState();
+                _inputManager.ResetState();
+
+                if (inputState.Pause)
+                {
+                    IsPaused = !IsPaused;
+                }
 
                 if (!IsPaused)
                 {
-                    MoveActors(frameInputState);
+                    MoveActors(inputState);
                     CheckForCollisions();
                     ManagePipes();
                 }
@@ -82,11 +94,14 @@ namespace FlappyBirdBlazor.Web.Models
             }
         }
 
-        public void MoveActors(UserInputState oldInput)
+        private void MoveActors(UserInputState inputState)
         {
-            if (oldInput.Jump)
+            if (inputState.Jump)
             {
-                Bird.Flap(BirdFlapStrength);
+                if (Bird.Bottom <= (SkyHeight - BirdFlapStrength))
+                {
+                    Bird.Flap(BirdFlapStrength);
+                }
             }
             else
             {
@@ -99,77 +114,52 @@ namespace FlappyBirdBlazor.Web.Models
             }
         }
 
-        public void CheckForCollisions()
+        private void CheckForCollisions()
         {
-            if (Bird.IsOnGround)
+            if (Bird.Bottom <= 0)
             {
-                Bird.Fall(Bird.Bottom);
+                Bird.Teleport(0);
                 GameOver();
             }
 
-            var closestPipe = Pipes.FirstOrDefault(p => p.IsInVerticalSpace(Bird.Left, Bird.Right));
+            var closestPipe = Pipes.FirstOrDefault(p => p.IsTouchingX(Bird));
 
             if (closestPipe != null)
             {
-                if (!Bird.IsBetweenY(closestPipe.GapBottom, closestPipe.GapTop))
+                var topPipe = closestPipe.TopPipe;
+                var bottomPipe = closestPipe.BottomPipe;
+
+                if (Bird.IsTouchingY(topPipe) || Bird.IsTouchingY(bottomPipe))
                 {
                     GameOver();
                 }
             }
         }
 
-        public void ManagePipes()
+        private void ManagePipes()
         {
             if (!Pipes.Any() || Pipes.Last().Left < (ContainerWidth - PipeSpacing))
             {
-                var pipeBottomWhenCentered = (SkyHeight / 2) - (PipeGapHeight / 2) - PipeModel.Height;
-                var pipeBottom = pipeBottomWhenCentered - PipeHeightVariation + _random.Next(0, PipeHeightVariation);
+                var pipeBottomNeutral = (SkyHeight / 2) - (PipeGapHeight / 2) - PipeHeight;
+                var pipeBottom = pipeBottomNeutral - PipeYAxisVariation + _random.Next(0, PipeYAxisVariation);
 
-                Pipes.Add(new PipeModel(ContainerWidth, pipeBottom, PipeGapHeight));
+                Pipes.Add(new PipesModel(ContainerWidth, pipeBottom, PipeHeight, PipeGapHeight, PipeWidth));
             }
 
             var firstPipe = Pipes.First();
 
-            if (firstPipe.IsOffScreen)
+            if (firstPipe.Left <= -firstPipe.Width)
             {
                 Pipes.Remove(firstPipe);
             }
         }
 
-        public void GameOver()
+        private void GameOver()
         {
-            if (!GodMode)
+            if (!Invincibility)
             {
                 IsGameOver = true;
                 IsRunning = false;
-            }
-        }
-
-        public void ButtonPressed(UserInput input)
-        {
-            switch (input)
-            {
-                case UserInput.Jump:
-                    InputState.Jump = true;
-                    break;
-                case UserInput.Left:
-                    InputState.Left = true;
-                    break;
-                case UserInput.Right:
-                    InputState.Right = true;
-                    break;
-                case UserInput.Down:
-                    InputState.Down = true;
-                    break;
-                case UserInput.Up:
-                    InputState.Up = true;
-                    break;
-                case UserInput.Pause:
-                    if (IsRunning)
-                    {
-                        IsPaused = !IsPaused;
-                    }
-                    break;
             }
         }
     }

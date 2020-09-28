@@ -1,6 +1,6 @@
 namespace FlappyBirdBlazor.Web.Models
 {
-    public enum UserInput
+    public enum UserInputCommand
     {
         Jump,
         Left,

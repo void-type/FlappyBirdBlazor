@@ -4,9 +4,9 @@
   <div class="sky" style="@_skyCss">
     <Bird Model="_gameManager.Bird"></Bird>
 
-    @foreach (var pipe in _gameManager.Pipes)
+    @foreach (var pipes in _gameManager.Pipes)
     {
-      <Pipe Model="pipe"></Pipe>
+      <Pipes Model="pipes"></Pipes>
     }
   </div>
   <div class="ground" style="@_groundCss"></div>
@@ -14,7 +14,7 @@
 <textarea name="info" style="@_infoCss" disabled>
   @Message()
 
-  @if(_showGameState){
+  @if(_gameManager.ShowGameState){
     @SerializedGameState()
   }
 </textarea>
@@ -22,8 +22,6 @@
 @code {
 
   GameManager _gameManager;
-
-      private bool _showGameState = true;
 
       private string _containerCss => $"height: {GameManager.ContainerHeight}px; width: {GameManager.ContainerWidth}px;";
       private string _skyCss => $"height: {GameManager.SkyHeight}px; width: {GameManager.ContainerWidth}px;";
@@ -61,22 +59,22 @@
           switch (eventArgs.Key)
           {
               case " ":
-                  _gameManager.ButtonPressed(UserInput.Jump);
+                  _gameManager.HandleUserInput(UserInputCommand.Jump);
                   break;
               case "a":
-                  _gameManager.ButtonPressed(UserInput.Left);
+                  _gameManager.HandleUserInput(UserInputCommand.Left);
                   break;
               case "d":
-                  _gameManager.ButtonPressed(UserInput.Right);
+                  _gameManager.HandleUserInput(UserInputCommand.Right);
                   break;
               case "s":
-                  _gameManager.ButtonPressed(UserInput.Down);
+                  _gameManager.HandleUserInput(UserInputCommand.Down);
                   break;
               case "w":
-                  _gameManager.ButtonPressed(UserInput.Up);
+                  _gameManager.HandleUserInput(UserInputCommand.Up);
                   break;
               case "p":
-                  _gameManager.ButtonPressed(UserInput.Pause);
+                  _gameManager.HandleUserInput(UserInputCommand.Pause);
                   break;
           }
       }
