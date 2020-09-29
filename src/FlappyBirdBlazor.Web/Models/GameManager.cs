@@ -34,10 +34,10 @@ namespace FlappyBirdBlazor.Web.Models
         public bool IsPaused { get; private set; } = false;
         public BirdModel Bird { get; private set; }
         public List<PipesModel> Pipes { get; private set; }
+        public event EventHandler OnReadyToRender;
 
         private readonly Random _random = new Random();
         private readonly UserInputManager _inputManager = new UserInputManager();
-        public event EventHandler OnReadyToRender;
 
         public GameManager()
         {

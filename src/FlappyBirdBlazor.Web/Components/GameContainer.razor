@@ -46,6 +46,11 @@
               return "Game Over. Click to restart.";
           }
 
+          if (_gameManager.IsPaused)
+          {
+              return "Paused.";
+          }
+
           if (!_gameManager.IsRunning)
           {
               return "Click to start.";
