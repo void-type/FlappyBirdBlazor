@@ -8,9 +8,6 @@ namespace FlappyBirdBlazor.Web.Models
     public class GameManager
     {
         public const int DelayPerFrame = 16;
-        public bool Invincibility { get; set; } = false;
-        public bool ShowGameState { get; set; } = false;
-
         public const int ContainerWidth = 900;
         public const int ContainerHeight = 700;
         public const int GroundHeight = 100;
@@ -26,9 +23,11 @@ namespace FlappyBirdBlazor.Web.Models
         public const int PipeGapHeight = 130;
         public const int PipeSpacing = 250;
         public const int PipeSpeed = 4;
-        public int PipeHeight => ContainerHeight;
+        public const int PipeHeight = ContainerHeight;
         public const int PipeWidth = 60;
 
+        public bool Invincibility { get; private set; } = false;
+        public bool ShowGameState { get; private set; } = false;
         public bool IsRunning { get; private set; } = false;
         public bool IsGameOver { get; private set; } = false;
         public bool IsPaused { get; private set; } = false;
