@@ -12,75 +12,91 @@
   <div class="ground" style="@_groundCss"></div>
 </div>
 <textarea name="info" style="@_infoCss" disabled>
-  @Message()
+@Message()
 
-  @if(_gameManager.ShowGameState){
-    @SerializedGameState()
-  }
+@if(_gameManager.Invincibility){
+@nameof(_gameManager.Invincibility)
+}
+
+@if(_gameManager.ShowGameState){
+@SerializedGameState()
+}
 </textarea>
 
 @code {
 
-  GameManager _gameManager;
+    GameManager _gameManager;
 
-      private string _containerCss => $"height: {GameManager.ContainerHeight}px; width: {GameManager.ContainerWidth}px;";
-      private string _skyCss => $"height: {GameManager.SkyHeight}px; width: {GameManager.ContainerWidth}px;";
-      private string _groundCss => $"top: {GameManager.SkyHeight}px; height: {GameManager.GroundHeight}px; width: {GameManager.ContainerWidth}px;";
-      private string _infoCss => $"top: 0; left: {GameManager.ContainerWidth + 10}px; height: 90%; width: {GameManager.ContainerWidth}px; position: absolute;";
+    private string _containerCss => $"height: {GameManager.ContainerHeight}px; width: {GameManager.ContainerWidth}px;";
+    private string _skyCss => $"height: {GameManager.SkyHeight}px; width: {GameManager.ContainerWidth}px;";
+    private string _groundCss => $"top: {GameManager.SkyHeight}px; height: {GameManager.GroundHeight}px; width: {GameManager.ContainerWidth}px;";
+    private string _infoCss => $"top: 0; left: {GameManager.ContainerWidth + 10}px; height: 90%; width: {GameManager.ContainerWidth}px; position: absolute;";
 
-      protected override void OnInitialized()
-      {
-          _gameManager = new GameManager();
-          _gameManager.OnReadyToRender += (o, e) => StateHasChanged();
-      }
+    protected override void OnInitialized()
+    {
+        _gameManager = new GameManager();
+        _gameManager.OnReadyToRender += (o, e) => StateHasChanged();
+    }
 
-      private string SerializedGameState()
-      {
-          return JsonSerializer.Serialize(_gameManager, new JsonSerializerOptions() { WriteIndented = true });
-      }
+    private string SerializedGameState()
+    {
+        return JsonSerializer.Serialize(_gameManager, new JsonSerializerOptions() { WriteIndented = true });
+    }
 
-      private string Message()
-      {
-          if (_gameManager.IsGameOver)
-          {
-              return "Game Over. Click to restart.";
-          }
+    private string Message()
+    {
+        if (_gameManager.IsGameOver)
+        {
+            return "Game Over. Click to restart.";
+        }
 
-          if (_gameManager.IsPaused)
-          {
-              return "Paused.";
-          }
+        if (_gameManager.IsPaused)
+        {
+            return "Paused.";
+        }
 
-          if (!_gameManager.IsRunning)
-          {
-              return "Click to start.";
-          }
+        if (!_gameManager.IsRunning)
+        {
+            return "Click to start.";
+        }
 
-          return "";
-      }
+        return "";
+    }
 
-      private void HandleKeyDown(KeyboardEventArgs eventArgs)
-      {
-          switch (eventArgs.Key)
-          {
-              case " ":
-                  _gameManager.HandleUserInput(UserInputCommand.Jump);
-                  break;
-              case "a":
-                  _gameManager.HandleUserInput(UserInputCommand.Left);
-                  break;
-              case "d":
-                  _gameManager.HandleUserInput(UserInputCommand.Right);
-                  break;
-              case "s":
-                  _gameManager.HandleUserInput(UserInputCommand.Down);
-                  break;
-              case "w":
-                  _gameManager.HandleUserInput(UserInputCommand.Up);
-                  break;
-              case "p":
-                  _gameManager.HandleUserInput(UserInputCommand.Pause);
-                  break;
-          }
-      }
+    private async Task HandleKeyDown(KeyboardEventArgs eventArgs)
+    {
+        if (!_gameManager.IsRunning && eventArgs.Key == "r")
+        {
+            await _gameManager.StartGame();
+            return;
+        }
+
+        switch (eventArgs.Key)
+        {
+            case " ":
+                _gameManager.HandleUserInput(UserInputCommand.Jump);
+                break;
+            case "a":
+                _gameManager.HandleUserInput(UserInputCommand.Left);
+                break;
+            case "d":
+                _gameManager.HandleUserInput(UserInputCommand.Right);
+                break;
+            case "s":
+                _gameManager.HandleUserInput(UserInputCommand.Down);
+                break;
+            case "w":
+                _gameManager.HandleUserInput(UserInputCommand.Up);
+                break;
+            case "p":
+                _gameManager.HandleUserInput(UserInputCommand.Pause);
+                break;
+            case "i":
+                _gameManager.HandleUserInput(UserInputCommand.Invincibility);
+                break;
+            case "o":
+                _gameManager.HandleUserInput(UserInputCommand.ShowGameState);
+                break;
+        }
+    }
 }

@@ -7,6 +7,8 @@ namespace FlappyBirdBlazor.Web.Models
         Right,
         Down,
         Up,
-        Pause
+        Pause,
+        Invincibility,
+        ShowGameState
     }
 }

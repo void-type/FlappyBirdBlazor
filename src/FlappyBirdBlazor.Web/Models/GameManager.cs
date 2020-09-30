@@ -47,6 +47,7 @@ namespace FlappyBirdBlazor.Web.Models
         {
             if (!IsRunning)
             {
+                IsRunning = true;
                 ResetGame();
                 await MainLoop();
             }
@@ -69,16 +70,24 @@ namespace FlappyBirdBlazor.Web.Models
 
         private async Task MainLoop()
         {
-            IsRunning = true;
-
             while (IsRunning)
             {
                 var inputState = _inputManager.GetState();
                 _inputManager.ResetState();
 
-                if (inputState.Pause)
+                if (inputState.Contains(UserInputCommand.Pause))
                 {
                     IsPaused = !IsPaused;
+                }
+
+                if (inputState.Contains(UserInputCommand.ShowGameState))
+                {
+                    ShowGameState = !ShowGameState;
+                }
+
+                if (inputState.Contains(UserInputCommand.Invincibility))
+                {
+                    Invincibility = !Invincibility;
                 }
 
                 if (!IsPaused)
@@ -93,9 +102,9 @@ namespace FlappyBirdBlazor.Web.Models
             }
         }
 
-        private void MoveActors(UserInputState inputState)
+        private void MoveActors(HashSet<UserInputCommand> inputState)
         {
-            if (inputState.Jump)
+            if (inputState.Contains(UserInputCommand.Jump))
             {
                 if (Bird.Bottom <= (SkyHeight - BirdFlapStrength))
                 {

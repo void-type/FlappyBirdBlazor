@@ -16,9 +16,9 @@ namespace FlappyBirdBlazor.Web.Models
             commands.Clear();
         }
 
-        public UserInputState GetState()
+        public HashSet<UserInputCommand> GetState()
         {
-            return new UserInputState(commands);
+            return new HashSet<UserInputCommand>(commands);
         }
 
         public void AddCommand(UserInputCommand command)
