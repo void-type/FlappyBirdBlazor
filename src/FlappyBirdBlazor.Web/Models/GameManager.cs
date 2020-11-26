@@ -1,7 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System;
 
 namespace FlappyBirdBlazor.Web.Models
 {
@@ -35,7 +36,6 @@ namespace FlappyBirdBlazor.Web.Models
         public List<PipesModel> Pipes { get; private set; }
         public event EventHandler OnReadyToRender;
 
-        private readonly Random _random = new Random();
         private readonly UserInputManager _inputManager = new UserInputManager();
 
         public GameManager()
@@ -149,7 +149,7 @@ namespace FlappyBirdBlazor.Web.Models
             if (!Pipes.Any() || Pipes.Last().Left < (ContainerWidth - PipeSpacing))
             {
                 var pipeBottomNeutral = (SkyHeight / 2) - (PipeGapHeight / 2) - PipeHeight;
-                var pipeBottom = pipeBottomNeutral - PipeYAxisVariation + _random.Next(0, PipeYAxisVariation);
+                var pipeBottom = pipeBottomNeutral - PipeYAxisVariation + RandomNumberGenerator.GetInt32(0, PipeYAxisVariation);
 
                 Pipes.Add(new PipesModel(ContainerWidth, pipeBottom, PipeHeight, PipeGapHeight, PipeWidth));
             }

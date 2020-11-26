@@ -25,16 +25,15 @@
 
 @code {
 
-    GameManager _gameManager;
+    GameManager _gameManager = new GameManager();
 
     private string _containerCss => $"height: {GameManager.ContainerHeight}px; width: {GameManager.ContainerWidth}px;";
     private string _skyCss => $"height: {GameManager.SkyHeight}px; width: {GameManager.ContainerWidth}px;";
     private string _groundCss => $"top: {GameManager.SkyHeight}px; height: {GameManager.GroundHeight}px; width: {GameManager.ContainerWidth}px;";
-    private string _infoCss => $"top: 0; left: {GameManager.ContainerWidth + 10}px; height: 90%; width: {GameManager.ContainerWidth}px; position: absolute;";
+    private string _infoCss => $"position: absolute; top: 0; left: {GameManager.ContainerWidth + 10}px; height: {GameManager.ContainerHeight}px; width: {GameManager.ContainerWidth}px;";
 
     protected override void OnInitialized()
     {
-        _gameManager = new GameManager();
         _gameManager.OnReadyToRender += (o, e) => StateHasChanged();
     }
 

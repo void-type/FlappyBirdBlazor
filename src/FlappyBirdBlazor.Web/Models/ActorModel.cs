@@ -1,5 +1,3 @@
-using System;
-
 namespace FlappyBirdBlazor.Web.Models
 {
     public abstract class ActorModel
@@ -11,7 +9,7 @@ namespace FlappyBirdBlazor.Web.Models
         public int Height { get; protected set; }
         public int Width { get; protected set; }
 
-        public ActorModel(int left, int bottom, int height, int width)
+        protected ActorModel(int left, int bottom, int height, int width)
         {
             SetActorPosition(left, bottom);
             SetActorSize(height, width);
