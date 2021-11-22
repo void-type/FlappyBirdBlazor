@@ -4,7 +4,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace FlappyBirdBlazor.Web
+namespace FlappyBirdBlazor.BlazorWasm
 {
     public static class Program
     {

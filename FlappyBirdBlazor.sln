@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ECDB1861-F33F-4F30-9B09-4D9A05F817D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlappyBirdBlazor.Web", "src\FlappyBirdBlazor.Web\FlappyBirdBlazor.Web.csproj", "{A202EFE0-DE06-4781-A410-B832DEE60C5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlappyBirdBlazor.BlazorWasm", "src\FlappyBirdBlazor.BlazorWasm\FlappyBirdBlazor.BlazorWasm.csproj", "{A202EFE0-DE06-4781-A410-B832DEE60C5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

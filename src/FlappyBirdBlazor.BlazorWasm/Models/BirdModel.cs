@@ -1,9 +1,9 @@
-namespace FlappyBirdBlazor.Web.Models
+namespace FlappyBirdBlazor.BlazorWasm.Models
 {
     public class BirdModel : ActorModel
     {
-        private int FlapTargetDistance = 0;
-        private int FlapAnimationCountdown = 0;
+        private int _flapTargetDistance = 0;
+        private int _flapAnimationCountdown = 0;
         private const int FlapAnimationLength = 3;
 
         public BirdModel(int left, int bottom, int height, int width) : base(left, bottom, height, width)
@@ -17,10 +17,10 @@ namespace FlappyBirdBlazor.Web.Models
 
         public void Fall(int distance)
         {
-            if (FlapAnimationCountdown > 0)
+            if (_flapAnimationCountdown > 0)
             {
-                Bottom += FlapTargetDistance / FlapAnimationLength;
-                FlapAnimationCountdown -= 1;
+                Bottom += _flapTargetDistance / FlapAnimationLength;
+                _flapAnimationCountdown--;
             }
             else
             {
@@ -30,13 +30,13 @@ namespace FlappyBirdBlazor.Web.Models
 
         public void Flap(int distance)
         {
-            if (FlapAnimationCountdown > 0)
+            if (_flapAnimationCountdown > 0)
             {
                 return;
             }
 
-            FlapTargetDistance = distance;
-            FlapAnimationCountdown = FlapAnimationLength;
+            _flapTargetDistance = distance;
+            _flapAnimationCountdown = FlapAnimationLength;
         }
     }
 }

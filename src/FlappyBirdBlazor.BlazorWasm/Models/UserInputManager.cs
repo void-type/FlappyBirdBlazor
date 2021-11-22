@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
-namespace FlappyBirdBlazor.Web.Models
+namespace FlappyBirdBlazor.BlazorWasm.Models
 {
     public class UserInputManager
     {
-        private readonly HashSet<UserInputCommand> commands = new HashSet<UserInputCommand>();
+        private readonly HashSet<UserInputCommand> _commands = new();
 
         public UserInputManager()
         {
@@ -13,17 +13,17 @@ namespace FlappyBirdBlazor.Web.Models
 
         public void ResetState()
         {
-            commands.Clear();
+            _commands.Clear();
         }
 
         public HashSet<UserInputCommand> GetState()
         {
-            return new HashSet<UserInputCommand>(commands);
+            return new HashSet<UserInputCommand>(_commands);
         }
 
         public void AddCommand(UserInputCommand command)
         {
-            commands.Add(command);
+            _commands.Add(command);
         }
     }
 }

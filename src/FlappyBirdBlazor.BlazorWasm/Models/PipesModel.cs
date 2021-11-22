@@ -1,4 +1,4 @@
-namespace FlappyBirdBlazor.Web.Models
+namespace FlappyBirdBlazor.BlazorWasm.Models
 {
     public class PipesModel : ActorModel
     {

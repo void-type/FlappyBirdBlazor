@@ -10,7 +10,7 @@
                 "isDefault": true
             },
             "options": {
-                "cwd": "src/FlappyBirdBlazor.Web/",
+                "cwd": "src/FlappyBirdBlazor.BlazorWasm/",
             },
             "args": [
                 "build",
@@ -22,10 +22,14 @@
             "command": "dotnet",
             "type": "process",
             "options": {
-                "cwd": "src/FlappyBirdBlazor.Web/",
             },
             "args": [
                 "publish",
+                "\"src/FlappyBirdBlazor.BlazorWasm/\"",
+                "--configuration",
+                "Release",
+                "--output",
+                "./artifacts/dist/release",
             ],
             "problemMatcher": "$msCompile"
         },
@@ -34,7 +38,7 @@
             "command": "dotnet",
             "type": "process",
             "options": {
-                "cwd": "src/FlappyBirdBlazor.Web/",
+                "cwd": "src/FlappyBirdBlazor.BlazorWasm/",
             },
             "args": [
                 "watch",

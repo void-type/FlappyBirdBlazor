@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System;
 
-namespace FlappyBirdBlazor.Web.Models
+namespace FlappyBirdBlazor.BlazorWasm.Models
 {
     public class GameManager
     {
@@ -27,16 +27,16 @@ namespace FlappyBirdBlazor.Web.Models
         public const int PipeHeight = ContainerHeight;
         public const int PipeWidth = 60;
 
-        public bool Invincibility { get; private set; } = false;
-        public bool ShowGameState { get; private set; } = false;
-        public bool IsRunning { get; private set; } = false;
-        public bool IsGameOver { get; private set; } = false;
-        public bool IsPaused { get; private set; } = false;
+        public bool Invincibility { get; private set; }
+        public bool ShowGameState { get; private set; }
+        public bool IsRunning { get; private set; }
+        public bool IsGameOver { get; private set; }
+        public bool IsPaused { get; private set; }
         public BirdModel Bird { get; private set; }
         public List<PipesModel> Pipes { get; private set; }
-        public event EventHandler OnReadyToRender;
+        public event EventHandler? OnReadyToRender;
 
-        private readonly UserInputManager _inputManager = new UserInputManager();
+        private readonly UserInputManager _inputManager = new();
 
         public GameManager()
         {
@@ -130,7 +130,7 @@ namespace FlappyBirdBlazor.Web.Models
                 GameOver();
             }
 
-            var closestPipe = Pipes.FirstOrDefault(p => p.IsTouchingX(Bird));
+            var closestPipe = Pipes.Find(p => p.IsTouchingX(Bird));
 
             if (closestPipe != null)
             {
@@ -146,7 +146,7 @@ namespace FlappyBirdBlazor.Web.Models
 
         private void ManagePipes()
         {
-            if (!Pipes.Any() || Pipes.Last().Left < (ContainerWidth - PipeSpacing))
+            if (Pipes.Count == 0 || Pipes.Last().Left < (ContainerWidth - PipeSpacing))
             {
                 var pipeBottomNeutral = (SkyHeight / 2) - (PipeGapHeight / 2) - PipeHeight;
                 var pipeBottom = pipeBottomNeutral - PipeYAxisVariation + RandomNumberGenerator.GetInt32(0, PipeYAxisVariation);
@@ -154,7 +154,7 @@ namespace FlappyBirdBlazor.Web.Models
                 Pipes.Add(new PipesModel(ContainerWidth, pipeBottom, PipeHeight, PipeGapHeight, PipeWidth));
             }
 
-            var firstPipe = Pipes.First();
+            var firstPipe = Pipes[0];
 
             if (firstPipe.Left <= -firstPipe.Width)
             {

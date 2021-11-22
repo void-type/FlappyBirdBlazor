@@ -12,15 +12,7 @@
   <div class="ground" style="@_groundCss"></div>
 </div>
 <textarea name="info" style="@_infoCss" disabled>
-@Message()
-
-@if(_gameManager.Invincibility){
-@nameof(_gameManager.Invincibility)
-}
-
-@if(_gameManager.ShowGameState){
-@SerializedGameState()
-}
+@GameInfo()
 </textarea>
 
 @code {
@@ -37,21 +29,33 @@
         _gameManager.OnReadyToRender += (o, e) => StateHasChanged();
     }
 
-    private string SerializedGameState()
+    private string GameInfo()
     {
-        return JsonSerializer.Serialize(_gameManager, new JsonSerializerOptions() { WriteIndented = true });
+        var info = new List<string> {
+            GameStateMessage()
+        };
+
+        if(_gameManager.Invincibility){
+            info.Add("Invincibility is on.");
+        }
+
+        if(_gameManager.ShowGameState){
+            info.Add(SerializedGameState());
+        }
+
+        return string.Join('\n', info);
     }
 
-    private string Message()
+    private string GameStateMessage()
     {
         if (_gameManager.IsGameOver)
         {
-            return "Game Over. Click to restart.";
+            return "Game Over. Click or press \"R\" to restart.";
         }
 
         if (_gameManager.IsPaused)
         {
-            return "Paused.";
+            return "Paused. Press \"P\" to resume.";
         }
 
         if (!_gameManager.IsRunning)
@@ -60,6 +64,11 @@
         }
 
         return "";
+    }
+
+    private string SerializedGameState()
+    {
+        return JsonSerializer.Serialize(_gameManager, new JsonSerializerOptions() { WriteIndented = true });
     }
 
     private async Task HandleKeyDown(KeyboardEventArgs eventArgs)
