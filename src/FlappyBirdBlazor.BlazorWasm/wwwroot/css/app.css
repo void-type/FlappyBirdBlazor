@@ -15,61 +15,61 @@ footer {
 }
 
 footer {
-    border-top: 1px solid;
-    padding: 1em 0rem;
-    text-align: center;
+  border-top: 1px solid;
+  padding: 1em 0rem;
+  text-align: center;
 }
 
 .game-container-wrapper {
-    position: relative;
-    display: block;
-}
-
-.game-container {
-    position: absolute;
-    top: 0px;
-    left: 0px;
+  position: relative;
 }
 
 .sky {
-    background-color: lightblue;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    overflow: hidden;
+  background-color: lightblue;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
 }
 
 .ground {
-    background-color: forestgreen;
-    position: absolute;
-    left:0px;
+  background-color: forestgreen;
+  position: absolute;
+  left: 0px;
 }
 
 .bird {
-    background-color: yellow;
-    position: absolute;
+  background-color: yellow;
+  position: absolute;
 }
 
 .pipe {
-    background-color: black;
-    position: absolute;
+  background-color: black;
+  position: absolute;
+}
+
+.game-info {
+  padding: 1em;
+  border: none;
+  margin: 0;
+  resize: none;
 }
 
 #blazor-error-ui {
-    background: lightyellow;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
+  background: lightyellow;
+  bottom: 0;
+  box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+  display: none;
+  left: 0;
+  padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
 }
 
 #blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
+  cursor: pointer;
+  position: absolute;
+  right: 0.75rem;
+  top: 0.5rem;
 }

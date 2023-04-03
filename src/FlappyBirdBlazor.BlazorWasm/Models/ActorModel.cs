@@ -1,4 +1,4 @@
-namespace FlappyBirdBlazor.BlazorWasm.Models
+﻿namespace FlappyBirdBlazor.BlazorWasm.Models
 {
     public abstract class ActorModel
     {

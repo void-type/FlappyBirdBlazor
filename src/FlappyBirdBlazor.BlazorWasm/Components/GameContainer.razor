@@ -1,6 +1,6 @@
 @using System.Text.Json;
 
-<div class="game-container" tabindex="0" style="@_containerCss" @onclick="_gameManager.StartGame" @onkeydown="HandleKeyDown">
+<div class="game-container" tabindex="0" style="@_containerCss" @onclick="_gameManager.StartGame" @onkeydown="HandleKeyDown" @onkeydown:preventDefault="true" @onkeydown:stopPropagation="true">
   <div class="sky" style="@_skyCss">
     <Bird Model="_gameManager.Bird"></Bird>
 
@@ -11,10 +11,16 @@
   </div>
   <div class="ground" style="@_groundCss"></div>
 </div>
-<textarea name="info" style="@_infoCss" disabled>
+<div>
+<textarea class="game-info" name="info" style="@_infoCss" disabled>
 @GameInfo()
-</textarea>
 
+Controls:
+P - Pause
+I - Invincibility
+O - Show game state
+</textarea>
+</div>
 @code {
 
     GameManager _gameManager = new GameManager();
@@ -22,7 +28,7 @@
     private string _containerCss => $"height: {GameManager.ContainerHeight}px; width: {GameManager.ContainerWidth}px;";
     private string _skyCss => $"height: {GameManager.SkyHeight}px; width: {GameManager.ContainerWidth}px;";
     private string _groundCss => $"top: {GameManager.SkyHeight}px; height: {GameManager.GroundHeight}px; width: {GameManager.ContainerWidth}px;";
-    private string _infoCss => $"position: absolute; top: 0; left: {GameManager.ContainerWidth + 10}px; height: {GameManager.ContainerHeight}px; width: {GameManager.ContainerWidth}px;";
+    private string _infoCss => $"position: absolute; top: 0; left: {GameManager.ContainerWidth}px; height: {GameManager.ContainerHeight}px; width: 400px;";
 
     protected override void OnInitialized()
     {

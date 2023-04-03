@@ -1,8 +1,10 @@
 <div class="bird" style="@_css"></div>
 
 @code {
-    [Parameter]
+    #pragma warning disable CS8618
+    [Parameter, EditorRequired]
     public BirdModel Model { get; set; }
+    #pragma warning restore CS8618
 
     private string _css => $"left: {Model.Left}px; bottom: {Model.Bottom}px; height: {Model.Height}px; width: {Model.Width}px;";
 }

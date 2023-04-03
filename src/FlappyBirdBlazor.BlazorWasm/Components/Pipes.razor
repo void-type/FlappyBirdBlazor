@@ -2,7 +2,8 @@
   <Pipe Model="@Model.BottomPipe"></Pipe>
 
 @code {
-
-  [Parameter]
-      public PipesModel Model { get; set; }
+    #pragma warning disable CS8618
+    [Parameter, EditorRequired]
+    public PipesModel Model { get; set; }
+    #pragma warning restore CS8618
 }

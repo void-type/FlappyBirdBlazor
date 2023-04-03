@@ -1,9 +1,10 @@
   <div class="pipe" style="@_css"></div>
 
 @code {
+    #pragma warning disable CS8618
+    [Parameter, EditorRequired]
+    public PipeModel Model { get; set; }
+      #pragma warning restore CS8618
 
-  [Parameter]
-      public PipeModel Model { get; set; }
-
-      private string _css => $"left: {Model.Left}px; bottom: {Model.Bottom}px; height: {Model.Height}px; width: {Model.Width}px;";
+    private string _css => $"left: {Model.Left}px; bottom: {Model.Bottom}px; height: {Model.Height}px; width: {Model.Width}px;";
 }

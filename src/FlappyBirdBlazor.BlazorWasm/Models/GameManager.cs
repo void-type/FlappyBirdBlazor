@@ -1,16 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System;
+﻿using System.Security.Cryptography;
 
 namespace FlappyBirdBlazor.BlazorWasm.Models
 {
     public class GameManager
     {
         public const int DelayPerFrame = 16;
-        public const int ContainerWidth = 900;
-        public const int ContainerHeight = 700;
+        public const int ContainerWidth = 700;
+        public const int ContainerHeight = 650;
         public const int GroundHeight = 100;
         public const int SkyHeight = ContainerHeight - GroundHeight;
 
@@ -26,14 +22,16 @@ namespace FlappyBirdBlazor.BlazorWasm.Models
         public const int PipeSpeed = 4;
         public const int PipeHeight = ContainerHeight;
         public const int PipeWidth = 60;
+        public const int BirdInitialLeft = (ContainerWidth / 2) - (BirdWidth / 2);
+        public const int PipeBottomNeutral = (SkyHeight / 2) - (PipeGapHeight / 2) - PipeHeight;
 
         public bool Invincibility { get; private set; }
         public bool ShowGameState { get; private set; }
         public bool IsRunning { get; private set; }
         public bool IsGameOver { get; private set; }
         public bool IsPaused { get; private set; }
-        public BirdModel Bird { get; private set; }
-        public List<PipesModel> Pipes { get; private set; }
+        public BirdModel Bird { get; private set; } = new BirdModel(BirdInitialLeft, BirdInitialBottom, BirdHeight, BirdWidth);
+        public List<PipesModel> Pipes { get; private set; } = new List<PipesModel>();
         public event EventHandler? OnReadyToRender;
 
         private readonly UserInputManager _inputManager = new();
@@ -56,8 +54,7 @@ namespace FlappyBirdBlazor.BlazorWasm.Models
         public void ResetGame()
         {
             _inputManager.ResetState();
-            var birdInitialLeft = (ContainerWidth / 2) - (BirdWidth / 2);
-            Bird = new BirdModel(birdInitialLeft, BirdInitialBottom, BirdHeight, BirdWidth);
+            Bird = new BirdModel(BirdInitialLeft, BirdInitialBottom, BirdHeight, BirdWidth);
             Pipes = new List<PipesModel>();
             IsGameOver = false;
             IsPaused = false;
@@ -148,8 +145,7 @@ namespace FlappyBirdBlazor.BlazorWasm.Models
         {
             if (Pipes.Count == 0 || Pipes.Last().Left < (ContainerWidth - PipeSpacing))
             {
-                var pipeBottomNeutral = (SkyHeight / 2) - (PipeGapHeight / 2) - PipeHeight;
-                var pipeBottom = pipeBottomNeutral - PipeYAxisVariation + RandomNumberGenerator.GetInt32(0, PipeYAxisVariation);
+                var pipeBottom = PipeBottomNeutral - PipeYAxisVariation + RandomNumberGenerator.GetInt32(0, PipeYAxisVariation);
 
                 Pipes.Add(new PipesModel(ContainerWidth, pipeBottom, PipeHeight, PipeGapHeight, PipeWidth));
             }

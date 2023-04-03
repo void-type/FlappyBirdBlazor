@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace FlappyBirdBlazor.BlazorWasm.Models
+﻿namespace FlappyBirdBlazor.BlazorWasm.Models
 {
     public class UserInputManager
     {
