@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace FlappyBirdBlazor.BlazorWasm.Models
 {
@@ -26,10 +27,11 @@ namespace FlappyBirdBlazor.BlazorWasm.Models
         public const int PipeBottomNeutral = (SkyHeight / 2) - (PipeGapHeight / 2) - PipeHeight;
 
         public bool Invincibility { get; private set; }
-        public bool ShowGameState { get; private set; }
+        public int FramesPerSecond { get; private set; }
+        public bool IsPaused { get; private set; }
         public bool IsRunning { get; private set; }
         public bool IsGameOver { get; private set; }
-        public bool IsPaused { get; private set; }
+        public bool ShowGameState { get; private set; }
         public BirdModel Bird { get; private set; } = new BirdModel(BirdInitialLeft, BirdInitialBottom, BirdHeight, BirdWidth);
         public List<PipesModel> Pipes { get; private set; } = new List<PipesModel>();
         public event EventHandler? OnReadyToRender;
@@ -67,7 +69,13 @@ namespace FlappyBirdBlazor.BlazorWasm.Models
 
         private async Task MainLoop()
         {
-            while (IsRunning)
+            var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(DelayPerFrame));
+
+            int frameCount = 0;
+
+            var lastSecond = Stopwatch.GetTimestamp();
+
+            while (IsRunning && await timer.WaitForNextTickAsync())
             {
                 var inputState = _inputManager.GetState();
                 _inputManager.ResetState();
@@ -95,7 +103,15 @@ namespace FlappyBirdBlazor.BlazorWasm.Models
                 }
 
                 OnReadyToRender?.Invoke(this, EventArgs.Empty);
-                await Task.Delay(DelayPerFrame);
+
+                frameCount++;
+
+                if (Stopwatch.GetElapsedTime(lastSecond).TotalSeconds >= 1)
+                {
+                    FramesPerSecond = frameCount;
+                    lastSecond = Stopwatch.GetTimestamp();
+                    frameCount = 0;
+                }
             }
         }
 

@@ -56,7 +56,7 @@ O - Show game state
     {
         if (_gameManager.IsGameOver)
         {
-            return "Game Over. Click or press \"R\" to restart.";
+            return "Game Over. Click or press \"C\" to restart.";
         }
 
         if (_gameManager.IsPaused)
@@ -66,7 +66,7 @@ O - Show game state
 
         if (!_gameManager.IsRunning)
         {
-            return "Click to start.";
+            return "Click the game to start.";
         }
 
         return "";
@@ -79,7 +79,7 @@ O - Show game state
 
     private async Task HandleKeyDown(KeyboardEventArgs eventArgs)
     {
-        if (!_gameManager.IsRunning && eventArgs.Key == "r")
+        if (!_gameManager.IsRunning && eventArgs.Key == "c")
         {
             await _gameManager.StartGame();
             return;
@@ -89,18 +89,6 @@ O - Show game state
         {
             case " ":
                 _gameManager.HandleUserInput(UserInputCommand.Jump);
-                break;
-            case "a":
-                _gameManager.HandleUserInput(UserInputCommand.Left);
-                break;
-            case "d":
-                _gameManager.HandleUserInput(UserInputCommand.Right);
-                break;
-            case "s":
-                _gameManager.HandleUserInput(UserInputCommand.Down);
-                break;
-            case "w":
-                _gameManager.HandleUserInput(UserInputCommand.Up);
                 break;
             case "p":
                 _gameManager.HandleUserInput(UserInputCommand.Pause);
